@@ -1,0 +1,22 @@
+FROM selenium/standalone-opera-debug:latest
+
+EXPOSE 5900-6000
+EXPOSE 4444-4544
+
+# Install dependencies
+USER root
+
+RUN apt-get -qq update
+RUN apt-get -qq -y install ffmpeg
+RUN apt-get -qq -y install openjdk-17-jdk
+RUN apt-get -qq -y install maven
+RUN apt-get -qq -y install gradle
+RUN curl -O -L $(curl -s https://api.github.com/repos/iteufel/nwjs-ffmpeg-prebuilt/releases/latest | jq -r ".assets[] | select(.name | test(\"linux-x64\")) | .browser_download_url")
+RUN unzip *.zip && mv libffmpeg.so /usr/lib/x86_64-linux-gnu/opera/libffmpeg.so
+RUN rm -v *.zip
+#RUN apt-get -qq -y install chromium-codecs-ffmpeg-extra
+#RUN find /usr/lib/ -name libffmpeg.so
+#RUN mv /usr/lib/x86_64-linux-gnu/opera/libffmpeg.so /usr/lib/x86_64-linux-gnu/opera/libffmpeg.so.bak
+#RUN cp -v /usr/lib/chromium-browser/libffmpeg.so /usr/lib/x86_64-linux-gnu/opera/libffmpeg.so
+
+USER seluser
